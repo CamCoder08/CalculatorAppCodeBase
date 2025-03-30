@@ -14,8 +14,9 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        configure() // 수식 표시
-        makeHorizontalStackView() // 스택뷰
+        configure()
+        let buttons = makeButton(titles: ["7", "8", "9", "+"])
+        makeHorizontalStackView(buttons) // 함수를 사용하지 않아서 노란색 경고 (빌드 문제 없음)
     }
 
     private func configure() {
@@ -35,49 +36,52 @@ class ViewController: UIViewController {
             resultLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
             resultLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
             resultLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 200)
-                                    ])
+            ])
+        
     }
 
-    private func makeButton(title: String) -> UIButton { // 버튼 생성 함수
-        //            for title in arrTitle    {
-        let button = UIButton()
-        button.setTitle(title, for: .normal)
-        button.titleLabel?.font = .boldSystemFont(ofSize: 30)
-        button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
+    // 버튼 생성 함수
+    private func makeButton(titles: [String]) -> [UIButton] {
+        var arrButton: [UIButton] = []
+        for title in titles { // 버튼 생성 반복문
+            let button = UIButton() // 버튼
+            button.setTitle(title, for: .normal)
+            button.titleLabel?.font = .boldSystemFont(ofSize: 30)
+            button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
 
-        NSLayoutConstraint.activate([
-            button.heightAnchor.constraint(equalToConstant: 80),
-            button.widthAnchor.constraint(equalToConstant: 80)
-        ])
+            button.translatesAutoresizingMaskIntoConstraints = false
 
-        return button
-
+            NSLayoutConstraint.activate([
+                        button.heightAnchor.constraint(equalToConstant: 80),
+                        button.widthAnchor.constraint(equalToConstant: 80)
+                    ])
+            arrButton.append(button) // 생성된 버튼 배열에 추가
+        }
+        return arrButton
     }
 
-    private func makeHorizontalStackView() { // 수평 생성 함수
-
-        let button7 = makeButton(title: "7")
-        var button8 = makeButton(title: "8")
-        var button9 = makeButton(title: "9")
-        var plusbButton = makeButton(title: "+")
-        let stackView = UIStackView()
+    // 수평 StackView 생성 함수
+    private func makeHorizontalStackView(_ buttonArray: [UIButton]) -> UIStackView {
+        let stackView = UIStackView() // StackView 생성
         stackView.axis = .horizontal
         stackView.backgroundColor = .black
         stackView.spacing = 10
         stackView.distribution = .fillEqually
-        stackView.addArrangedSubview(button7)
-        stackView.addArrangedSubview(button8)
-        stackView.addArrangedSubview(button9)
-        stackView.addArrangedSubview(plusbButton)
+
+        // UIButton 배열의 인덱스를 각각 꺼내서 stackView에 넣기
+        for button in buttonArray {
+            stackView.addArrangedSubview(button)
+        } // for.Each문 활용해보기
+
+        self.view.addSubview(stackView)
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
-
-        view.addSubview(stackView)
 
         NSLayoutConstraint.activate([
             stackView.heightAnchor.constraint(equalToConstant: 80),
             stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
+        return stackView
     }
 }
