@@ -19,7 +19,7 @@ class ViewController: UIViewController {
                                                        ["4", "5", "6", "-"],
                                                        ["1", "2", "3", "*"],
                                                        ["AC", "0", "=", "/"]])
-        let verticalStackView: [[UIStackView]] = makeHorizontalStackView(buttons)
+        let verticalStackView: [UIStackView] = makeHorizontalStackView(buttons)
         makeVerticalStackView(verticalStackView)
 
         //        makeHorizontalStackView(buttons) // 함수를 사용하지 않아서 노란색 경고 (빌드 문제 없음)
@@ -46,10 +46,9 @@ class ViewController: UIViewController {
                                     ])
 
     }
-
     // 버튼 생성 함수
     func makeButton(titles: [[String]]) -> [[UIButton]] {
-        var arrButton: [[UIButton]] = [[]]
+        var arrButton: [[UIButton]] = []
         for arrTitles in titles {
             var arrButtons: [UIButton] = []
             for title in arrTitles { // 버튼 생성 반복문
@@ -72,55 +71,47 @@ class ViewController: UIViewController {
     }
 
     // 수평 StackView 생성 함수 (수평 스택뷰 4개 생성..?)
-    func makeHorizontalStackView(_ buttonArray: [[UIButton]]) -> [[UIStackView]] {
-        var horizontalStackView: [[UIStackView]] = [[]]
-        for arrbutton in buttonArray {
-            var arrStackView: [UIStackView] = []
-            for horizontalArrButton in arrbutton {
-                let stackView = UIStackView() // StackView 생성
-                stackView.axis = .horizontal
-                stackView.backgroundColor = .black
-                stackView.spacing = 10
-                stackView.distribution = .fillEqually
-                stackView.addArrangedSubview(horizontalArrButton)
+    func makeHorizontalStackView(_ buttonArray: [[UIButton]]) -> [UIStackView] {
+        var horizontalStackView: [UIStackView] = []
 
-                stackView.translatesAutoresizingMaskIntoConstraints = false
+        for horizontalArrButton in buttonArray {
+            let stackView = UIStackView() // StackView 생성
+            stackView.axis = .horizontal
+            stackView.backgroundColor = .black
+            stackView.spacing = 10
+            stackView.distribution = .fillEqually
+            stackView.translatesAutoresizingMaskIntoConstraints = false
 
-                NSLayoutConstraint.activate([
-                    stackView.heightAnchor.constraint(equalToConstant: 80)
-                ])
-                arrStackView.append(stackView)
+            for arrbutton in horizontalArrButton {
+                stackView.addArrangedSubview(arrbutton)
             }
-            horizontalStackView.append(arrStackView)
+
+            horizontalStackView.append(stackView)
         }
         return horizontalStackView
+
     }
 
-
-
-    func makeVerticalStackView(_ numberPad: [[UIStackView]]) {
-        var verticalStackView = UIStackView()
-        verticalStackView = UIStackView()
+    func makeVerticalStackView(_ numberPad: [UIStackView]) {
+        let verticalStackView = UIStackView()
         verticalStackView.axis = .vertical
-        verticalStackView.backgroundColor = .blue
+        verticalStackView.backgroundColor = .black
         verticalStackView.spacing = 10
         verticalStackView.distribution = .fillEqually
 
         verticalStackView.translatesAutoresizingMaskIntoConstraints = false
 
         for arrStackView in numberPad {
-            for stackView in arrStackView {
-                verticalStackView.addArrangedSubview(stackView)
-            }
-
-            view.addSubview(verticalStackView)
-
+            verticalStackView.addArrangedSubview(arrStackView)
         }
+
+        view.addSubview(verticalStackView)
+
         NSLayoutConstraint.activate([
-            verticalStackView.widthAnchor.constraint(equalToConstant: 350),
-            verticalStackView.topAnchor.constraint(equalTo: resultLabel.bottomAnchor, constant: 60),
-            verticalStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            verticalStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
+                    verticalStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+                    verticalStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+                    verticalStackView.topAnchor.constraint(equalTo: resultLabel.bottomAnchor, constant: 60),
+                    verticalStackView.bottomAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20)
+                ])
     }
 }
