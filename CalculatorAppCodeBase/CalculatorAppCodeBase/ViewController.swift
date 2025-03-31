@@ -15,8 +15,15 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configure()
-        let buttons = makeButton(titles: ["7", "8", "9", "+"])
-        makeHorizontalStackView(buttons) // 함수를 사용하지 않아서 노란색 경고 (빌드 문제 없음)
+        let buttons: [[UIButton]] = makeButton(titles:[["7", "8", "9", "+"],
+                                                       ["4", "5", "6", "-"],
+                                                       ["1", "2", "3", "*"],
+                                                       ["AC", "0", "=", "/"]])
+        let verticalStackView: [[UIStackView]] = makeHorizontalStackView(buttons)
+        makeVerticalStackView(verticalStackView)
+
+        //        makeHorizontalStackView(buttons) // 함수를 사용하지 않아서 노란색 경고 (빌드 문제 없음)
+        //        makeVerticalStackView
     }
 
     private func configure() {
@@ -33,55 +40,87 @@ class ViewController: UIViewController {
 
         NSLayoutConstraint.activate([ // 스냅킷 없이 기본 코드로 진행 (긴 코드 연습..)
             resultLabel.heightAnchor.constraint(equalToConstant: 100),
-            resultLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 30),
-            resultLabel.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -30),
-            resultLabel.topAnchor.constraint(equalTo: self.view.topAnchor, constant: 200)
-            ])
-        
+            resultLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 30),
+            resultLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -30),
+            resultLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 200)
+                                    ])
+
     }
 
     // 버튼 생성 함수
-    private func makeButton(titles: [String]) -> [UIButton] {
-        var arrButton: [UIButton] = []
-        for title in titles { // 버튼 생성 반복문
-            let button = UIButton() // 버튼
-            button.setTitle(title, for: .normal)
-            button.titleLabel?.font = .boldSystemFont(ofSize: 30)
-            button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
+    func makeButton(titles: [[String]]) -> [[UIButton]] {
+        var arrButton: [[UIButton]] = [[]]
+        for arrTitles in titles {
+            var arrButtons: [UIButton] = []
+            for title in arrTitles { // 버튼 생성 반복문
+                let button: UIButton = UIButton() // 버튼
+                button.setTitle(title, for: .normal)
+                button.titleLabel?.font = .boldSystemFont(ofSize: 30)
+                button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
 
-            button.translatesAutoresizingMaskIntoConstraints = false
+                button.translatesAutoresizingMaskIntoConstraints = false
 
-            NSLayoutConstraint.activate([
-                        button.heightAnchor.constraint(equalToConstant: 80),
-                        button.widthAnchor.constraint(equalToConstant: 80)
-                    ])
-            arrButton.append(button) // 생성된 버튼 배열에 추가
+                NSLayoutConstraint.activate([
+                    button.heightAnchor.constraint(equalToConstant: 80),
+                    button.widthAnchor.constraint(equalToConstant: 80)
+                ])
+                arrButtons.append(button) // 생성된 버튼 배열에 추가
+            }
+            arrButton.append(arrButtons)
         }
         return arrButton
     }
 
-    // 수평 StackView 생성 함수
-    private func makeHorizontalStackView(_ buttonArray: [UIButton]) -> UIStackView {
-        let stackView = UIStackView() // StackView 생성
-        stackView.axis = .horizontal
-        stackView.backgroundColor = .black
-        stackView.spacing = 10
-        stackView.distribution = .fillEqually
+    // 수평 StackView 생성 함수 (수평 스택뷰 4개 생성..?)
+    func makeHorizontalStackView(_ buttonArray: [[UIButton]]) -> [[UIStackView]] {
+        var horizontalStackView: [[UIStackView]] = [[]]
+        for arrbutton in buttonArray {
+            var arrStackView: [UIStackView] = []
+            for horizontalArrButton in arrbutton {
+                let stackView = UIStackView() // StackView 생성
+                stackView.axis = .horizontal
+                stackView.backgroundColor = .black
+                stackView.spacing = 10
+                stackView.distribution = .fillEqually
+                stackView.addArrangedSubview(horizontalArrButton)
 
-        // UIButton 배열의 인덱스를 각각 꺼내서 stackView에 넣기
-        for button in buttonArray {
-            stackView.addArrangedSubview(button)
-        } // for.Each문 활용해보기
+                stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        self.view.addSubview(stackView)
+                NSLayoutConstraint.activate([
+                    stackView.heightAnchor.constraint(equalToConstant: 80)
+                ])
+                arrStackView.append(stackView)
+            }
+            horizontalStackView.append(arrStackView)
+        }
+        return horizontalStackView
+    }
 
-        stackView.translatesAutoresizingMaskIntoConstraints = false
 
+
+    func makeVerticalStackView(_ numberPad: [[UIStackView]]) {
+        var verticalStackView = UIStackView()
+        verticalStackView = UIStackView()
+        verticalStackView.axis = .vertical
+        verticalStackView.backgroundColor = .blue
+        verticalStackView.spacing = 10
+        verticalStackView.distribution = .fillEqually
+
+        verticalStackView.translatesAutoresizingMaskIntoConstraints = false
+
+        for arrStackView in numberPad {
+            for stackView in arrStackView {
+                verticalStackView.addArrangedSubview(stackView)
+            }
+
+            view.addSubview(verticalStackView)
+
+        }
         NSLayoutConstraint.activate([
-            stackView.heightAnchor.constraint(equalToConstant: 80),
-            stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            verticalStackView.widthAnchor.constraint(equalToConstant: 350),
+            verticalStackView.topAnchor.constraint(equalTo: resultLabel.bottomAnchor, constant: 60),
+            verticalStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            verticalStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
-        return stackView
     }
 }
