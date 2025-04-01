@@ -94,6 +94,10 @@ class ViewController: UIViewController {
             resultNumber += stringNumber // 이후 숫자버튼이 들어오면 초기값이 0이 아닌상태이기 때문에 else 구문 실행
         }
 
+        if stringNumber == "AC" {
+            resultNumber = "0"
+        }
+
         resultLabel.text = resultNumber
     }
 
