@@ -8,7 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
-    private var resultNumber = 12345 // Int
+    private var resultNumber = "0" // 기본값을 0으로 변경
     let resultLabel = UILabel()
 
 
@@ -26,7 +26,7 @@ class ViewController: UIViewController {
     private func configure() {
         view.backgroundColor = .black
 
-        resultLabel.text = "\(resultNumber)" // 스트링 인터폴레이션으로 정수 담기
+        resultLabel.text = "0"  // 스트링 인터폴레이션으로 정수 담기
         resultLabel.textColor = .white
         resultLabel.textAlignment = .right
         resultLabel.font = .boldSystemFont(ofSize: 60)
@@ -56,6 +56,7 @@ class ViewController: UIViewController {
                     button.titleLabel?.font = .boldSystemFont(ofSize: 30)
                     button.translatesAutoresizingMaskIntoConstraints = false
                     button.layer.cornerRadius = 40
+                    button.addTarget(self, action: #selector(num), for: .touchDown)
 
                     NSLayoutConstraint.activate([
                         button.heightAnchor.constraint(equalToConstant: 80),
@@ -67,6 +68,7 @@ class ViewController: UIViewController {
                     button.titleLabel?.font = .boldSystemFont(ofSize: 30)
                     button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
                     button.layer.cornerRadius = 40
+                    button.addTarget(self, action: #selector(num), for: .touchDown) // 버튼 활성화
 
                     button.translatesAutoresizingMaskIntoConstraints = false
 
@@ -81,6 +83,20 @@ class ViewController: UIViewController {
         }
         return arrButtons
     }
+
+    @objc
+    func num(sender: UIButton) { // 파라미터로 버튼타입을 받음
+        guard let stringNumber = sender.currentTitle else { return } // 현재 버튼 값을 받아서 stringNumber에 담기
+
+        if resultNumber == "0" { // resultNumber에 초기값이 0이라면
+            resultNumber = stringNumber // resultNumber을 현재 버튼으로 바꿔줌
+        } else {
+            resultNumber += stringNumber // 이후 숫자버튼이 들어오면 초기값이 0이 아닌상태이기 때문에 else 구문 실행
+        }
+
+        resultLabel.text = resultNumber
+    }
+
     // 수평 StackView 생성 함수
     func makeHorizontalStackView(_ buttonArray: [[UIButton]]) -> [UIStackView] {
         var horizontalStackView: [UIStackView] = []
