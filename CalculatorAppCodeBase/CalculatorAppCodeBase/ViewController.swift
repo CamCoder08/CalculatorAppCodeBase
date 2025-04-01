@@ -55,6 +55,7 @@ class ViewController: UIViewController {
                     button.backgroundColor = .orange
                     button.titleLabel?.font = .boldSystemFont(ofSize: 30)
                     button.translatesAutoresizingMaskIntoConstraints = false
+                    button.layer.cornerRadius = 40
 
                     NSLayoutConstraint.activate([
                         button.heightAnchor.constraint(equalToConstant: 80),
@@ -65,6 +66,7 @@ class ViewController: UIViewController {
                     button.setTitle(title, for: .normal)
                     button.titleLabel?.font = .boldSystemFont(ofSize: 30)
                     button.backgroundColor = UIColor(red: 58/255, green: 58/255, blue: 58/255, alpha: 1.0)
+                    button.layer.cornerRadius = 40
 
                     button.translatesAutoresizingMaskIntoConstraints = false
 
