@@ -8,7 +8,7 @@
 import UIKit
 
 class ViewController: UIViewController {
-    private var resultNumber = "0" // 기본값을 0으로 변경
+    private var resultNumber = "" // 빈 문자열
     let resultLabel = UILabel()
 
 
@@ -85,20 +85,43 @@ class ViewController: UIViewController {
     }
 
     @objc
-    func num(sender: UIButton) { // 파라미터로 버튼타입을 받음
-        guard let stringNumber = sender.currentTitle else { return } // 현재 버튼 값을 받아서 stringNumber에 담기
+    func num(sender: UIButton) { // 파라미터로 버튼 타입을 받음
+        guard let stringNumber = sender.currentTitle else { return } // 현재 버튼값을 stringNumber에 담기
 
-        if resultNumber == "0" { // resultNumber에 초기값이 0이라면
-            resultNumber = stringNumber // resultNumber을 현재 버튼으로 바꿔줌
-        } else {
-            resultNumber += stringNumber // 이후 숫자버튼이 들어오면 초기값이 0이 아닌상태이기 때문에 else 구문 실행
-        }
-
+        // AC 버튼 처리
         if stringNumber == "AC" {
             resultNumber = "0"
+            resultLabel.text = resultNumber
+            return
+        }
+
+        // = 버튼
+        if stringNumber == "=" {
+            if let resultValue = calculate(expression: resultNumber) {
+                resultNumber = "\(resultValue)" // 옵셔널 바인딩 된 Int값을 문자열로
+            } else {
+                return
+            }
+            resultLabel.text = resultNumber
+            return
+        }
+
+        if resultNumber == "0" { // 초기값이 0이라면
+            resultNumber = stringNumber // resultNumber을 현재 버튼으로 바꿈
+        } else {
+            resultNumber += stringNumber // 이후 숫자 버튼이 들어오면 초기값이 0이 아닌 상태라 문자열 더하기
         }
 
         resultLabel.text = resultNumber
+    }
+
+    func calculate(expression: String) -> Int? {
+        let expression = NSExpression(format: expression) // 계산된 값을 expression에 저장...?
+        if let value = expression.expressionValue(with: nil, context: nil) as? Int {
+            return value
+        } else {
+            return nil
+        }
     }
 
     // 수평 StackView 생성 함수
