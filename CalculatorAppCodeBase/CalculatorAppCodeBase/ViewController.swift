@@ -95,15 +95,28 @@ class ViewController: UIViewController {
             return
         }
 
-        // = 버튼
+        let operators = ["+", "-", "*", "/"]
+
         if stringNumber == "=" {
+            // 연산자로 끝나는 경우
+            if let lastChar = resultNumber.last, operators.contains(String(lastChar)) {
+                return // 현재 값의 마지막 문자를 안전하게 추출해서 operator에 담겨있는지 비교 (있느면 리턴)
+            }
+
             if let resultValue = calculate(expression: resultNumber) {
-                resultNumber = "\(resultValue)" // 옵셔널 바인딩 된 Int값을 문자열로
+                resultNumber = "\(resultValue)"
             } else {
                 return
             }
+
             resultLabel.text = resultNumber
             return
+        }
+        // 연산자가 중복되는 경우 방지하기, 가드문 활용해보기
+        if let lastChar = resultNumber.last { // 옵셔널 바운딩으로 현재값의 마지막 문자를 안전하게 추출
+            guard !operators.contains(stringNumber) || !operators.contains(String(lastChar)) else {
+                return //입력된 숫자가 연산자이거나 마지막 현재값의 마지막 숫자가 연산자인 상황을 거짓으로 반전시켜서 실행 막기
+            }
         }
 
         if resultNumber == "0" { // 초기값이 0이라면
